@@ -5,9 +5,8 @@ type Props = {
     customClass?: string
 }
 
-const Index = ({children,customClass}:Props) => {
-
-
+const Index = ({children,customClass} : Props) => {
+    
     return (
         <>
             
