@@ -1,16 +1,7 @@
 'use client'
 import { http } from '../config'
 
-interface Room {
-  id: number
-  name: String
-  slug: String
-  description: String
-  feature: String
-  published: String
-  availability: String
-  images: String
-}
+
 
 const getRoomList = async () => {
   try {
@@ -22,4 +13,33 @@ const getRoomList = async () => {
   }
 }
 
-export { getRoomList }
+const createRoom = async (roomCreate:RoomCreate): Promise<RoomCreate> => {
+  try {
+    const res = await http().post('/api/v1/room', roomCreate)
+    return res.data
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+const updateRoom = async (id : number , roomUpdate : RoomUpdate): Promise<RoomCreate> =>{
+  try {
+    const res = await http().post(`/api/v1/room/${id}`, roomUpdate)
+    return res.data
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+const deleteRoom = async (id:number): Promise<void> => {
+  try {
+    const res = await http().delete(`/api/v1/room/${id}`)
+    return res.data
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export { getRoomList,createRoom,updateRoom,deleteRoom}

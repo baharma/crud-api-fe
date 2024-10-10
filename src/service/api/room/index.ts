@@ -1,19 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-import { getRoomList } from './room.api'
+import { createRoom, deleteRoom, getRoomList, updateRoom } from './room.api'
 import useLoading from '../useLoading'
-
-interface Room {
-  id: number
-  name: String
-  slug: String
-  description: String
-  feature: String
-  published: String
-  availability: String
-  images: String
-}
 
 const useRoomApi = (autoLoad: boolean = false) => {
   const { loading, on, off } = useLoading()
@@ -23,12 +12,55 @@ const useRoomApi = (autoLoad: boolean = false) => {
   const onGetRooms = async () => {
     try {
     const data = await getRoomList();
-    console.log(data)
         setRoomItems(data)
+        setError(null)
     } catch (err) {
       console.error(`Error fetching products: ${err}`)
-      alert(`Terjadi Kesalahan pada sistem: ${err}`)
+      setError(`Failed to fetching media: ${err}`)
     } 
+  }
+
+  const onCreateRoom = async (roomCreate: RoomCreate) => {
+    on()
+    try {
+      const data = await createRoom(roomCreate)
+      // At this point, 'data' should already be a Room object, including the id
+      setError(null)
+      setRoomItems((prev) => [...prev, data as Room])     
+    } catch (err) {
+      console.error(`Error creating room: ${err}`)
+      setError(`Failed to create room: ${err}`)
+    } finally {
+      off()
+    }
+  }
+
+  const onUpdateRoom = async (room: RoomUpdate,id:number) => {
+    on()
+    try {
+      const data = await updateRoom(id,room)
+      setError(null)
+      setRoomItems((prev) => prev.map((item) => item.id === id? data as Room : item))     
+    } catch (err) {
+      console.error(`Error updating room: ${err}`)
+      setError(`Failed to update room: ${err}`)
+    } finally {
+      off()
+    }
+  }
+
+  const onDeleteRoom = async (id:never)=>{
+    on()
+    try {
+      await deleteRoom(id)
+      setError(null)
+      setRoomItems((prev) => prev.filter((item) => item.id!== id))     
+    } catch (err) {
+      console.error(`Error deleting room: ${err}`)
+      setError(`Failed to delete room: ${err}`)
+    } finally {
+      off()
+    }
   }
 
   useEffect(() => {
@@ -41,8 +73,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     loading,
     roomItems,
     error,
-    onGetRooms,
-
+    onGetRooms
   }
 }
 
