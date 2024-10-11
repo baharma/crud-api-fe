@@ -17,7 +17,9 @@ const useRoomApi = (autoLoad: boolean = false) => {
     } catch (err) {
       console.error(`Error fetching products: ${err}`)
       setError(`Failed to fetching media: ${err}`)
-    } 
+    }finally{
+      off()
+    }
   }
 
   const onCreateRoom = async (roomCreate: RoomCreate) => {
@@ -73,7 +75,10 @@ const useRoomApi = (autoLoad: boolean = false) => {
     loading,
     roomItems,
     error,
-    onGetRooms
+    onGetRooms,
+    onCreateRoom,
+    onUpdateRoom,
+    onDeleteRoom,
   }
 }
 
