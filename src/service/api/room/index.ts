@@ -11,13 +11,13 @@ const useRoomApi = (autoLoad: boolean = false) => {
 
   const onGetRooms = async () => {
     try {
-    const data = await getRoomList();
-        setRoomItems(data)
-        setError(null)
+      const data = await getRoomList()
+      setRoomItems(data)
+      setError(null)
     } catch (err) {
       console.error(`Error fetching products: ${err}`)
       setError(`Failed to fetching media: ${err}`)
-    }finally{
+    } finally {
       off()
     }
   }
@@ -27,7 +27,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     try {
       const data = await createRoom(roomCreate)
       setError(null)
-      setRoomItems((prev) => [...prev, data as Room])     
+      setRoomItems((prev) => [...prev, data as Room])
     } catch (err) {
       console.error(`Error creating room: ${err}`)
       setError(`Failed to create room: ${err}`)
@@ -36,12 +36,14 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }
 
-  const onUpdateRoom = async (room: RoomUpdate,id:number) => {
+  const onUpdateRoom = async (room: RoomUpdate, id: number) => {
     on()
     try {
-      const data = await updateRoom(id,room)
+      const data = await updateRoom(id, room)
       setError(null)
-      setRoomItems((prev) => prev.map((item) => item.id === id? data as Room : item))     
+      setRoomItems((prev) =>
+        prev.map((item) => (item.id === id ? (data as Room) : item)),
+      )
     } catch (err) {
       console.error(`Error updating room: ${err}`)
       setError(`Failed to update room: ${err}`)
@@ -50,12 +52,12 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }
 
-  const onDeleteRoom = async (id:never)=>{
+  const onDeleteRoom = async (id: never) => {
     on()
     try {
       await deleteRoom(id)
       setError(null)
-      setRoomItems((prev) => prev.filter((item) => item.id!== id))     
+      setRoomItems((prev) => prev.filter((item) => item.id !== id))
     } catch (err) {
       console.error(`Error deleting room: ${err}`)
       setError(`Failed to delete room: ${err}`)
@@ -70,7 +72,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }, [autoLoad])
 
-  return  {
+  return {
     loading,
     roomItems,
     error,
@@ -82,4 +84,3 @@ const useRoomApi = (autoLoad: boolean = false) => {
 }
 
 export default useRoomApi
-

@@ -1,15 +1,10 @@
-import { ReactNode } from "react"
+import { ReactNode } from 'react'
 
 type Props = {
-    children: ReactNode
-    customClass?: string
+  children: ReactNode
+  customClass?: string
 }
 
-const Index = ({children,customClass} : Props) => {
-    
-    return (
-        <>
-            
-        </>
-    )
+const Index = ({ children, customClass }: Props) => {
+  return <></>
 }

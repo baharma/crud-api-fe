@@ -1,8 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 
 const API_URL: string =
-  process.env.NEXT_PUBLIC_BASE_API_URL ||
-  'http://localhost:8000'
+  process.env.NEXT_PUBLIC_BASE_API_URL || 'http://localhost:8000'
 
 export const http = (
   authMode?: boolean,
