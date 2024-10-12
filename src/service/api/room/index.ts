@@ -26,7 +26,6 @@ const useRoomApi = (autoLoad: boolean = false) => {
     on()
     try {
       const data = await createRoom(roomCreate)
-      // At this point, 'data' should already be a Room object, including the id
       setError(null)
       setRoomItems((prev) => [...prev, data as Room])     
     } catch (err) {
