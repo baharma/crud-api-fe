@@ -16,7 +16,7 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     try {
       on()
       const data = await getCalendarList()
-      setCalendar(data)
+      setCalendar(data.data)
       setError(null)
     } catch (err) {
       console.error(`Error fetching calendar: ${err}`)
@@ -87,3 +87,5 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     onDeleteCelender,
   }
 }
+
+export default useCalendarApi
