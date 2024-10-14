@@ -1,18 +1,17 @@
 // TableData.tsx atau columns.tsx
-import React from 'react';
-import { ColumnsType } from 'antd/es/table';
-import { Space, Button, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-
+import React from 'react'
+import { ColumnsType } from 'antd/es/table'
+import { Space, Button, Tooltip } from 'antd'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 // Dummy handlers untuk aksi Edit dan Delete
 const handleEdit = (record: Calendar) => {
-  console.log('Edit:', record);
-};
+  console.log('Edit:', record)
+}
 
 const handleDelete = (record: Calendar) => {
-  console.log('Delete:', record);
-};
+  console.log('Delete:', record)
+}
 
 export const Columns: ColumnsType<Calendar> = [
   {
@@ -35,7 +34,9 @@ export const Columns: ColumnsType<Calendar> = [
     key: 'name',
     render: (text: string | null | undefined) => (
       <Tooltip title={text || 'No Detail'}>
-        {text && text.length > 50 ? `${text.substring(0, 50)}...` : text || 'No Detail'}
+        {text && text.length > 50
+          ? `${text.substring(0, 50)}...`
+          : text || 'No Detail'}
       </Tooltip>
     ),
     sorter: (a: Calendar, b: Calendar) => a.name.localeCompare(b.name),
@@ -47,7 +48,9 @@ export const Columns: ColumnsType<Calendar> = [
     key: 'slug',
     render: (text: string | null | undefined) => (
       <Tooltip title={text || 'No Detail'}>
-        {text && text.length > 50 ? `${text.substring(0, 50)}...` : text || 'No Detail'}
+        {text && text.length > 50
+          ? `${text.substring(0, 50)}...`
+          : text || 'No Detail'}
       </Tooltip>
     ),
     width: 200,
@@ -58,7 +61,9 @@ export const Columns: ColumnsType<Calendar> = [
     key: 'detail',
     render: (text: string | null | undefined) => (
       <Tooltip title={text || 'No Detail'}>
-        {text && text.length > 50 ? `${text.substring(0, 50)}...` : text || 'No Detail'}
+        {text && text.length > 50
+          ? `${text.substring(0, 50)}...`
+          : text || 'No Detail'}
       </Tooltip>
     ),
     width: 300,
@@ -69,9 +74,9 @@ export const Columns: ColumnsType<Calendar> = [
     key: 'price',
     render: (price: number | undefined | null) => {
       if (typeof price === 'number') {
-        return `Rp.${price.toFixed(2)}`;
+        return `Rp.${price.toFixed(2)}`
       }
-      return 'Rp.0.00'; // Nilai default jika price tidak tersedia
+      return 'Rp.0.00' // Nilai default jika price tidak tersedia
     },
     sorter: (a: Calendar, b: Calendar) => a.price - b.price,
     width: 100,
@@ -100,4 +105,4 @@ export const Columns: ColumnsType<Calendar> = [
     ),
     width: 150,
   },
-];
+]

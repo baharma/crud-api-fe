@@ -1,5 +1,7 @@
+import Layout from '../../layout/index'
+
 const Room = () => {
-  return <>asds</>
+  return <Layout></Layout>
 }
 
 export default Room

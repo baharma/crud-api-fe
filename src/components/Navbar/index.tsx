@@ -7,7 +7,9 @@ const Navbar: React.FC = () => {
     <nav className="bg-stone-200 shadow-md">
       <div className="container mx-auto p-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className='text-4xl font-bold text-gray-900'>Crud Cuy</Link>
+          <Link href="/" className="text-4xl font-bold text-gray-900">
+            Crud Cuy
+          </Link>
           <div className="flex space-x-4">
             <Link
               href="/room"
