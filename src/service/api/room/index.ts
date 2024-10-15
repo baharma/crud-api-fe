@@ -12,7 +12,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
   const onGetRooms = async () => {
     try {
       const data = await getRoomList()
-      setRoomItems(data)
+      setRoomItems(data.data)
       setError(null)
     } catch (err) {
       console.error(`Error fetching products: ${err}`)

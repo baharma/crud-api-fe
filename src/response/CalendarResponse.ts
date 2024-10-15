@@ -8,16 +8,16 @@ interface Calendar {
 }
 
 interface CalendarCreate {
-  room: string
-  name: string
-  detail: string
-  price: number
+  room_id: number
+  rateplan_id: number
+  date: string
+  availability: number
 }
 
 interface CalendarUpdate {
-  room: string
-  name: string
-  detail: string
-  price: number
+  room_id: number
+  rateplan_id: number
+  date: string
+  availability: number
   _method: 'PUT'
 }
