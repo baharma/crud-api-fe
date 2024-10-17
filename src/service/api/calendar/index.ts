@@ -12,17 +12,19 @@ const useCalendarApi = (autoLoad: boolean = false) => {
   const [calendar, setCalendar] = useState<Calendar[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  const onGetCalendarList = async () => {
+  const onGetCalendarList = async (): Promise<Calendar[]> => {
     try {
-      on()
-      const data = await getCalendarList()
-      setCalendar(data.data)
-      setError(null)
+      on() // Aktifkan loading indicator
+      const data = await getCalendarList() // Panggil API
+      setCalendar(data.data) // Set data ke state jika diperlukan
+      setError(null) // Set error ke null jika berhasil
+      return data.data // Kembalikan data dari API
     } catch (err) {
       console.error(`Error fetching calendar: ${err}`)
       setError(`Failed to fetch calendar: ${err}`)
+      return [] // Kembalikan array kosong jika terjadi error
     } finally {
-      off()
+      off() // Matikan loading indicator
     }
   }
 

@@ -16,7 +16,7 @@ const useRatePlantApi = (autoLoad: boolean = false) => {
     try {
       const ratePlant = await getRatePlanList()
       setError(null)
-      setRatePlantItems(ratePlant)
+      setRatePlantItems(ratePlant.data)
     } catch (err) {
       console.log(err)
       throw err
@@ -29,7 +29,7 @@ const useRatePlantApi = (autoLoad: boolean = false) => {
     try {
       const ratePlant = await creataRatePlant(ratePlantCreate)
       setError(null)
-      setRatePlantItems((prev) => [...prev, ratePlant])
+      setRatePlantItems(ratePlant.data)
     } catch (err) {
       console.error(`Error creating ratePlant: ${err}`)
       setError(`Failed to create ratePlant: ${err}`)
@@ -46,7 +46,7 @@ const useRatePlantApi = (autoLoad: boolean = false) => {
     try {
       const ratePlant = await updateRatePlant(ratePlantUpdate, id)
       setError(null)
-      setRatePlantItems(ratePlant)
+      setRatePlantItems(ratePlant.data)
     } catch (err) {
       console.error(`Error updating ratePlant: ${err}`)
       setError(`Failed to update ratePlant: ${err}`)
@@ -60,7 +60,7 @@ const useRatePlantApi = (autoLoad: boolean = false) => {
     try {
       const ratePlant = await deleteRatePlant(id)
       setError(null)
-      setRatePlantItems(ratePlant)
+      setRatePlantItems(ratePlant.data)
     } catch (err) {
       console.error(`Error updating ratePlant: ${err}`)
       setError(`Failed to update ratePlant: ${err}`)

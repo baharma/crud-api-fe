@@ -76,7 +76,7 @@ export const Columns: ColumnsType<Calendar> = [
       if (typeof price === 'number') {
         return `Rp.${price.toFixed(2)}`
       }
-      return 'Rp.0.00' // Nilai default jika price tidak tersedia
+      return 'Rp.0.00'
     },
     sorter: (a: Calendar, b: Calendar) => a.price - b.price,
     width: 100,
