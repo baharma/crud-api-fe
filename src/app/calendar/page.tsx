@@ -10,9 +10,17 @@ import { Columns } from './TableData'
 
 const Calendar = () => {
   const [calendarData, setCalendarData] = useState<Calendar[]>([])
+  const [idCalendar, setIdCalendar] = useState<number | null>(null)
   const [forms] = Form.useForm()
-  const { calendar, loading, onCreateCalendar, onGetCalendarList } =
-    useCalendarApi(true)
+  const {
+    calendar,
+    loading,
+    onCreateCalendar,
+    onGetCalendarList,
+    onUpdateCalendar,
+    onFindIdCalendar,
+    onDeleteCelender,
+  } = useCalendarApi(true)
   const room = useRoomApi(true)
   const rateplan = useRatePlantApi(true)
   const [selectedItems, setSelectedItems] = useState<Room[]>([])
@@ -25,12 +33,46 @@ const Calendar = () => {
   )
   const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
 
-  const onSubmit = async (values: CalendarCreate) => {
-    await onCreateCalendar(values).then(async () => {
-      handleOk()
+  const editNow = async (id: number) => {
+   
+    const dataFind = await onFindIdCalendar(id)
+    console.log(dataFind.data) 
+    forms.setFieldsValue({
+      room_id: dataFind.data.room_id,
+      rateplan_id: dataFind.data.rateplan_id,
+      date: dataFind.data.date,
+      availability: dataFind.data.availability,
+    })
+    setIdCalendar(dataFind.data.room_id)
+    const datas = await onGetCalendarList()
+    setCalendarData(datas)
+    showModal()
+  }
+  const deleteNow = async (id: number) => {
+    await onDeleteCelender(id).then(async () => {
       const datas = await onGetCalendarList()
       setCalendarData(datas)
     })
+  }
+
+  const onSubmit = async (values: CalendarCreate) => {
+    if (idCalendar) {
+      const updateValues: CalendarUpdate = {
+        ...values,
+        _method: 'PUT',
+      }
+      await onUpdateCalendar(updateValues, idCalendar).then(async () => {
+        handleOk()
+        const datas = await onGetCalendarList()
+        setCalendarData(datas)
+      })
+    } else {
+      await onCreateCalendar(values).then(async () => {
+        handleOk()
+        const datas = await onGetCalendarList()
+        setCalendarData(datas)
+      })
+    }
   }
 
   useEffect(() => {
@@ -47,8 +89,8 @@ const Calendar = () => {
         </Button>
       </div>
       <Table<Calendar>
-        columns={Columns}
-        dataSource={Array.isArray(calendarData) ? calendarData : []} // Pastikan dataSource adalah array
+        columns={Columns(editNow, deleteNow)}
+        dataSource={Array.isArray(calendarData) ? calendarData : []}
         loading={loading}
         rowKey="id"
         pagination={{ pageSize: 10 }}
@@ -58,6 +100,7 @@ const Calendar = () => {
         open={open}
         confirmLoading={confirmLoading}
         footer={null}
+        onCancel={handleCancel}
       >
         <Form onFinish={onSubmit} layout="vertical" form={forms}>
           <Form.Item
@@ -69,6 +112,7 @@ const Calendar = () => {
               showSearch
               placeholder="Search to Select"
               optionFilterProp="label"
+              value={forms.getFieldValue('room_id')}
               filterOption={(input, option) => {
                 const label = option?.label
                 if (typeof label === 'string') {
@@ -110,6 +154,7 @@ const Calendar = () => {
               showSearch
               placeholder="Search to Select"
               optionFilterProp="label"
+              value={forms.getFieldValue('rateplan_id')}
               filterOption={(input, option) => {
                 const label = option?.label
                 if (typeof label === 'string') {

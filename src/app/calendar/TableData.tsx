@@ -5,15 +5,18 @@ import { Space, Button, Tooltip } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 // Dummy handlers untuk aksi Edit dan Delete
-const handleEdit = (record: Calendar) => {
-  console.log('Edit:', record)
-}
+// const handleEdit = (record: Calendar) => {
+//   console.log('Edit:', record)
+// }
 
-const handleDelete = (record: Calendar) => {
-  console.log('Delete:', record)
-}
+// const handleDelete = (record: Calendar) => {
+//   console.log('Delete:', record)
+// }
 
-export const Columns: ColumnsType<Calendar> = [
+export const Columns = (
+  onEdit: (id: number) => void,
+  onDelete: (id: number) => void,
+): ColumnsType<Calendar> => [
   {
     title: 'ID',
     dataIndex: 'id',
@@ -89,7 +92,7 @@ export const Columns: ColumnsType<Calendar> = [
         <Button
           type="primary"
           icon={<EditOutlined />}
-          onClick={() => handleEdit(record)}
+          onClick={() => onEdit(record.id)}
         >
           Edit
         </Button>
@@ -97,7 +100,7 @@ export const Columns: ColumnsType<Calendar> = [
           type="primary"
           danger
           icon={<DeleteOutlined />}
-          onClick={() => handleDelete(record)}
+          onClick={() => onDelete(record.id)}
         >
           Delete
         </Button>

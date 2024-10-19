@@ -6,7 +6,6 @@ interface Calendar {
   detail: string
   price: number
 }
-
 interface CalendarCreate {
   room_id: number
   rateplan_id: number
@@ -14,10 +13,23 @@ interface CalendarCreate {
   availability: number
 }
 
+interface CalendarDetail {
+  id: number
+  room_id?: number
+  rateplan_id?: number
+  date?: string
+  availability?: number
+  created_at?: string
+  updated_at?: string
+}
+
 interface CalendarUpdate {
   room_id: number
   rateplan_id: number
   date: string
   availability: number
+  _method: 'PUT'
+}
+interface CalendarUpdate extends CalendarCreate {
   _method: 'PUT'
 }

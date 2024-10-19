@@ -32,11 +32,28 @@ const updateCalendar = async (id: number, updateCalendar: CalendarUpdate) => {
 
 const deleteCalendar = async (id: number) => {
   try {
-    await http().delete(`/api/v1/calendar/${id}`)
+    const res = await http().delete(`/api/v1/calendar/${id}`)
+    return res.data
   } catch (err) {
     console.log(err)
     throw err
   }
 }
 
-export { getCalendarList, createCalendarList, updateCalendar, deleteCalendar }
+const findId = async (id: number) => {
+  try {
+    const res = await http().get(`/api/v1/calendars/${id}`)
+    return res.data
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export {
+  getCalendarList,
+  createCalendarList,
+  updateCalendar,
+  deleteCalendar,
+  findId,
+}

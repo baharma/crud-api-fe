@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { cache, useEffect, useState } from 'react'
 import useLoading from '../useLoading'
 import {
   getCalendarList,
   createCalendarList,
   updateCalendar,
   deleteCalendar,
+  findId,
 } from './calendar.api'
 
 const useCalendarApi = (autoLoad: boolean = false) => {
@@ -14,11 +15,11 @@ const useCalendarApi = (autoLoad: boolean = false) => {
 
   const onGetCalendarList = async (): Promise<Calendar[]> => {
     try {
-      on() // Aktifkan loading indicator
-      const data = await getCalendarList() // Panggil API
-      setCalendar(data.data) // Set data ke state jika diperlukan
-      setError(null) // Set error ke null jika berhasil
-      return data.data // Kembalikan data dari API
+      on()
+      const data = await getCalendarList()
+      setCalendar(data.data)
+      setError(null)
+      return data.data
     } catch (err) {
       console.error(`Error fetching calendar: ${err}`)
       setError(`Failed to fetch calendar: ${err}`)
@@ -33,7 +34,7 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     try {
       const data = await createCalendarList(createCalendar)
       setCalendar(data)
-      setError(error)
+      setError(null)
     } catch (err) {
       console.error(`Error creating calendar: ${err}`)
       setError(`Failed to create calendar: ${err}`)
@@ -50,7 +51,7 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     try {
       const data = await updateCalendar(id, calendarUpdate)
       setCalendar(data)
-      setError(error)
+      setError(null)
     } catch (err) {
       console.error(`Error updating calendar: ${err}`)
       setError(`Failed to update calendar: ${err}`)
@@ -63,8 +64,23 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     on()
     try {
       const data = await deleteCalendar(id)
-      setCalendar(calendar.filter((item) => item.id !== id))
-      setError(error)
+      setCalendar(data)
+      setError(null)
+    } catch (err) {
+      console.error(`Error deleting calendar: ${err}`)
+      setError(`Failed to delete calendar: ${err}`)
+    } finally {
+      off()
+    }
+  }
+
+  const onFindIdCalendar = async (id: number) => {
+    on()
+    try {
+      const data = await findId(id)
+      setCalendar(data)
+      setError(null)
+      return data
     } catch (err) {
       console.error(`Error deleting calendar: ${err}`)
       setError(`Failed to delete calendar: ${err}`)
@@ -87,6 +103,7 @@ const useCalendarApi = (autoLoad: boolean = false) => {
     onCreateCalendar,
     onUpdateCalendar,
     onDeleteCelender,
+    onFindIdCalendar,
   }
 }
 
