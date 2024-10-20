@@ -1,7 +1,7 @@
 'use client'
 import { Button, Form, Input, Modal, Select, Table } from 'antd'
 import Layout from '../../layout/index'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import useCalendarApi from '@/service/api/calendar'
 import useRoomApi from '@/service/api/room'
 import useRatePlantApi from '@/service/api/ratePlan'
@@ -11,32 +11,37 @@ import { Columns } from './TableData'
 const Calendar = () => {
   const [calendarData, setCalendarData] = useState<Calendar[]>([])
   const [idCalendar, setIdCalendar] = useState<number | null>(null)
+  const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
   const [forms] = Form.useForm()
   const {
-    calendar,
     loading,
     onCreateCalendar,
     onGetCalendarList,
     onUpdateCalendar,
     onFindIdCalendar,
     onDeleteCelender,
-  } = useCalendarApi(true)
+  } = useCalendarApi()
+  const memoizedCalendarData = useMemo(() => {
+    return calendarData
+  }, [calendarData])
+
+  const refreshData = async () => {
+    const datas = await onGetCalendarList()
+    setCalendarData(datas)
+  }
   const room = useRoomApi(true)
   const rateplan = useRatePlantApi(true)
-  const [selectedItems, setSelectedItems] = useState<Room[]>([])
-  const [rateOption, setrateOption] = useState<RatePlant[]>([])
-  const filteredOptions = room.roomItems.filter(
-    (o) => !selectedItems.includes(o),
-  )
-  const filterRateOption = rateplan.ratePlantItems.filter(
-    (o) => !rateOption.includes(o),
-  )
-  const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
+
+  const filteredOptions = useMemo(() => {
+    return room.roomItems
+  }, [room.roomItems]) 
+
+  const filterRateOption = useMemo(() => {
+    return rateplan.ratePlantItems
+  }, [rateplan.ratePlantItems])
 
   const editNow = async (id: number) => {
-   
     const dataFind = await onFindIdCalendar(id)
-    console.log(dataFind.data) 
     forms.setFieldsValue({
       room_id: dataFind.data.room_id,
       rateplan_id: dataFind.data.rateplan_id,
@@ -44,14 +49,11 @@ const Calendar = () => {
       availability: dataFind.data.availability,
     })
     setIdCalendar(dataFind.data.room_id)
-    const datas = await onGetCalendarList()
-    setCalendarData(datas)
     showModal()
   }
   const deleteNow = async (id: number) => {
     await onDeleteCelender(id).then(async () => {
-      const datas = await onGetCalendarList()
-      setCalendarData(datas)
+      refreshData()
     })
   }
 
@@ -69,17 +71,16 @@ const Calendar = () => {
     } else {
       await onCreateCalendar(values).then(async () => {
         handleOk()
-        const datas = await onGetCalendarList()
-        setCalendarData(datas)
+        refreshData()
       })
     }
+    setIdCalendar(null)
+    forms.resetFields()
   }
 
   useEffect(() => {
-    if (calendar) {
-      setCalendarData(calendar)
-    }
-  }, [calendar])
+    refreshData()
+  }, [])
 
   return (
     <Layout>
@@ -90,7 +91,7 @@ const Calendar = () => {
       </div>
       <Table<Calendar>
         columns={Columns(editNow, deleteNow)}
-        dataSource={Array.isArray(calendarData) ? calendarData : []}
+        dataSource={memoizedCalendarData}
         loading={loading}
         rowKey="id"
         pagination={{ pageSize: 10 }}
@@ -110,7 +111,7 @@ const Calendar = () => {
           >
             <Select
               showSearch
-              placeholder="Search to Select"
+              placeholder="Search to room"
               optionFilterProp="label"
               value={forms.getFieldValue('room_id')}
               filterOption={(input, option) => {

@@ -3,11 +3,12 @@ import useLoading from '../useLoading'
 import {
   createBooking,
   deleteBooking,
+  findIdBooking,
   getBookingList,
   updateBooking,
 } from './booking.api'
 
-const useBookingApi = (autoLoad: boolean) => {
+const useBookingApi = (autoLoad: boolean = false) => {
   const { loading, on, off } = useLoading()
   const [bookingItems, setBookingItems] = useState<Booking[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -18,6 +19,7 @@ const useBookingApi = (autoLoad: boolean) => {
       const data = await getBookingList()
       setBookingItems(data)
       setError(null)
+      return data.data
     } catch (err) {
       console.error(`Error fetching booking list: ${err}`)
       setError(`Failed to fetch booking list: ${err}`)
@@ -67,6 +69,19 @@ const useBookingApi = (autoLoad: boolean) => {
     }
   }
 
+  const onfindIdBooking = async (id: number) => {
+    try {
+      on()
+      const data = await findIdBooking(id)
+      return data.data
+    } catch (err) {
+      console.error(`Error find booking: ${err}`)
+      setError(`Failed to find booking: ${err}`)
+    } finally {
+      off
+    }
+  }
+
   useEffect(() => {
     if (autoLoad) {
       onGetListBooking()
@@ -80,6 +95,7 @@ const useBookingApi = (autoLoad: boolean) => {
     onUpdateBooking,
     onDeleteBooking,
     onGetListBooking,
+    onfindIdBooking,
   }
 }
 

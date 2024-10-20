@@ -40,4 +40,20 @@ const deleteBooking = async (id: number) => {
   }
 }
 
-export { getBookingList, createBooking, updateBooking, deleteBooking }
+const findIdBooking = async (id: number) => {
+  try {
+    const res = await http().get(`/api/v1/room/${id}`)
+    return res.data
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export {
+  getBookingList,
+  createBooking,
+  updateBooking,
+  deleteBooking,
+  findIdBooking,
+}

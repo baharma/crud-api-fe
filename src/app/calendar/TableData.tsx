@@ -4,15 +4,6 @@ import { ColumnsType } from 'antd/es/table'
 import { Space, Button, Tooltip } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
-// Dummy handlers untuk aksi Edit dan Delete
-// const handleEdit = (record: Calendar) => {
-//   console.log('Edit:', record)
-// }
-
-// const handleDelete = (record: Calendar) => {
-//   console.log('Delete:', record)
-// }
-
 export const Columns = (
   onEdit: (id: number) => void,
   onDelete: (id: number) => void,
