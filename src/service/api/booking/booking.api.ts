@@ -42,7 +42,7 @@ const deleteBooking = async (id: number) => {
 
 const findIdBooking = async (id: number) => {
   try {
-    const res = await http().get(`/api/v1/room/${id}`)
+    const res = await http().get(`/api/v1/booking/${id}`)
     return res.data
   } catch (err) {
     console.log(err)

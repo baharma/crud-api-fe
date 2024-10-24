@@ -21,6 +21,7 @@ const Calendar = () => {
     onFindIdCalendar,
     onDeleteCelender,
   } = useCalendarApi()
+
   const memoizedCalendarData = useMemo(() => {
     return calendarData
   }, [calendarData])
@@ -34,21 +35,26 @@ const Calendar = () => {
 
   const filteredOptions = useMemo(() => {
     return room.roomItems
-  }, [room.roomItems]) 
+  }, [room.roomItems])
 
   const filterRateOption = useMemo(() => {
     return rateplan.ratePlantItems
   }, [rateplan.ratePlantItems])
 
   const editNow = async (id: number) => {
-    const dataFind = await onFindIdCalendar(id)
-    forms.setFieldsValue({
-      room_id: dataFind.data.room_id,
-      rateplan_id: dataFind.data.rateplan_id,
-      date: dataFind.data.date,
-      availability: dataFind.data.availability,
+    await onFindIdCalendar(id).then((dataFind) => {
+      forms.setFieldsValue({
+        room_id: {
+          value: dataFind.data.room_id,
+          label: dataFind.data.room_name,
+        },
+        rateplan_id: dataFind.data.rateplan_id,
+        date: dataFind.data.date,
+        availability: dataFind.data.availability,
+      })
+      setIdCalendar(dataFind.data.room_id)
     })
-    setIdCalendar(dataFind.data.room_id)
+
     showModal()
   }
   const deleteNow = async (id: number) => {
@@ -81,7 +87,6 @@ const Calendar = () => {
   useEffect(() => {
     refreshData()
   }, [])
-
   return (
     <Layout>
       <div className="flex">
@@ -113,15 +118,12 @@ const Calendar = () => {
               showSearch
               placeholder="Search to room"
               optionFilterProp="label"
-              value={forms.getFieldValue('room_id')}
-              filterOption={(input, option) => {
-                const label = option?.label
-                if (typeof label === 'string') {
-                  return label.toLowerCase().includes(input.toLowerCase())
-                }
-                return false
-              }}
+              labelInValue
               className="w-full"
+              value={forms.getFieldValue('room_id')}
+              onChange={(newValue) => {
+                forms.setFieldsValue({ room_id: newValue })
+              }}
             >
               {filteredOptions.map((item: Room) => (
                 <Select.Option key={item.id} value={item.id} label={item.name}>
@@ -155,6 +157,7 @@ const Calendar = () => {
               showSearch
               placeholder="Search to Select"
               optionFilterProp="label"
+              labelInValue
               value={forms.getFieldValue('rateplan_id')}
               filterOption={(input, option) => {
                 const label = option?.label
@@ -164,6 +167,9 @@ const Calendar = () => {
                 return false
               }}
               className="w-full"
+              onChange={(newValue) => {
+                forms.setFieldsValue({ rateplan_id: newValue })
+              }}
             >
               {filterRateOption.map((item: RatePlant) => (
                 <Select.Option key={item.id} value={item.id} label={item.name}>
@@ -173,11 +179,9 @@ const Calendar = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" onClick={() => forms.submit()}>
-              Submit
-            </Button>
-          </Form.Item>
+          <Button type="primary" onClick={() => forms.submit()}>
+            Submit
+          </Button>
         </Form>
       </Modal>
     </Layout>

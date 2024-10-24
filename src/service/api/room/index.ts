@@ -1,7 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-import { createRoom, deleteRoom, getRoomList, updateRoom } from './room.api'
+import {
+  createRoom,
+  deleteRoom,
+  findIdRoom,
+  getRoomList,
+  updateRoom,
+} from './room.api'
 import useLoading from '../useLoading'
 
 const useRoomApi = (autoLoad: boolean = false) => {
@@ -14,6 +20,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
       const data = await getRoomList()
       setRoomItems(data.data)
       setError(null)
+      return data
     } catch (err) {
       console.error(`Error fetching products: ${err}`)
       setError(`Failed to fetching media: ${err}`)
@@ -27,7 +34,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     try {
       const data = await createRoom(roomCreate)
       setError(null)
-      setRoomItems((prev) => [...prev, data as Room])
+      setRoomItems(data)
     } catch (err) {
       console.error(`Error creating room: ${err}`)
       setError(`Failed to create room: ${err}`)
@@ -52,7 +59,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }
 
-  const onDeleteRoom = async (id: never) => {
+  const onDeleteRoom = async (id: number) => {
     on()
     try {
       await deleteRoom(id)
@@ -61,6 +68,19 @@ const useRoomApi = (autoLoad: boolean = false) => {
     } catch (err) {
       console.error(`Error deleting room: ${err}`)
       setError(`Failed to delete room: ${err}`)
+    } finally {
+      off()
+    }
+  }
+  const onFindIdRoom = async (id: number) => {
+    on()
+    try {
+      const res = await findIdRoom(id)
+      setError(null)
+      setRoomItems(res)
+    } catch (err) {
+      console.error(`Error fetching room: ${err}`)
+      setError(`Failed to fetch room: ${err}`)
     } finally {
       off()
     }
@@ -80,6 +100,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     onCreateRoom,
     onUpdateRoom,
     onDeleteRoom,
+    onFindIdRoom,
   }
 }
 

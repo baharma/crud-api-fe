@@ -8,7 +8,7 @@ import { useModal } from '@/service/ui/useModal'
 import useRoomApi from '@/service/api/room'
 import useCalendarApi from '@/service/api/calendar'
 import useRatePlantApi from '@/service/api/ratePlan'
-
+import clearTimeInDate from '@/service/hooks/useDateClearTime'
 const Booking = () => {
   const [booking, setBooking] = useState<Booking[]>([])
   const [idBooking, setIdBooking] = useState<number | null>(null)
@@ -26,15 +26,52 @@ const Booking = () => {
   const { calendar } = useCalendarApi(true)
   const { ratePlantItems } = useRatePlantApi(true)
 
+  const refreshData = async () => {
+    const data = await onGetListBooking()
+    setBooking(data)
+  }
   useEffect(() => {
     refreshData()
   }, [])
+  const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
 
-  const submitEvent = (e : React.FormEvent<HTMLFormElement>)=>{
-    e.preventDefault()
+  const submitEvent = () => {
     form.validateFields().then(async (values) => {
-      
+      if (idBooking) {
+        const valuesUpdate : BookingUpdate = {
+          room_id: values.room_id.value,
+          rateplan_id: values.rateplan_id,
+          calendar_id: values.calendar_id,
+          reservation_date: values.reservation_date,
+          check_in: values.check_in,
+          check_out: values.check_out,
+          name: values.name,
+          email: values.email,
+          phone_number: values.phone_number,
+          _method: 'PUT',
+        }
+        console.log(valuesUpdate)
+        await onUpdateBooking(valuesUpdate, idBooking).then(async () => {
+          console.log(idBooking)
+          handleOk()
+          refreshData()
+          form.resetFields()
+        })
+      } else {
+        await onCreateBooking(values).then(async () => {
+          handleOk()
+          refreshData()
+          form.resetFields()
+        })
+      }
     })
+  }
+
+  const modalResetForm = () => {
+    form.resetFields
+    setIdBooking(null)
+    showModal()
+    refreshData()
   }
 
   const dataRoomList = useMemo(() => {
@@ -49,20 +86,31 @@ const Booking = () => {
     return ratePlantItems
   }, [ratePlantItems])
 
-  const refreshData = async () => {
-    const data = await onGetListBooking()
-    setBooking(data)
-  }
-  const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
-
   const bookingData = useMemo(() => {
     return booking
   }, [booking])
-  const editBooking = async (id: number) => {
-    const dataFind = await onfindIdBooking(id)
 
-    setIdBooking(id)
-    showModal()
+  const editBooking = async (id: number) => {
+    modalResetForm()
+    await onfindIdBooking(id).then((dataFind) => {
+    
+      form.setFieldsValue({
+        room_id: {
+          value: dataFind.room_id,
+          label: 'Test',
+        },
+        rateplan_id: dataFind.rateplan_id,
+        calendar_id: dataFind.calendar_id,
+        reservation_date: dataFind.reservation_date,
+        check_in: clearTimeInDate(dataFind.check_in),
+        check_out: clearTimeInDate(dataFind.check_out),
+        name: dataFind.name,
+        email: dataFind.email,
+        phone_number: dataFind.phone_number,
+      })
+      setIdBooking(dataFind.id)
+    })
+
   }
   const deleteBooking = async (id: number) => {
     await onDeleteBooking(id).then(async () => {
@@ -78,7 +126,7 @@ const Booking = () => {
 
   return (
     <Layout>
-      <Button type="primary" className="mb-2" onClick={showModal}>
+      <Button type="primary" className="mb-2" onClick={modalResetForm}>
         Booking New
       </Button>
       <Table<Booking>
@@ -95,7 +143,7 @@ const Booking = () => {
         footer={null}
         onCancel={handleCancel}
       >
-        <Form onFinish={onSubmit} layout="vertical" form={form}>
+        <Form onFinish={submitEvent} layout="vertical" form={form}>
           <div className="flex flex-col">
             <Form.Item
               name={'room_id'}
@@ -227,8 +275,28 @@ const Booking = () => {
                 <Input />
               </Form.Item>
             </div>
+            <div className="flex flex-row">
+            <Form.Item
+              name={'email'}
+              label="Email"
+              className="basis-1/2 me-2"
+              rules={[{ required: true, message: 'Please Input email' }]}
+            >
+              <Input type="email" />
+            </Form.Item>
+            <Form.Item
+              name={'phone_number'}
+              label="Phone Number"
+              className="basis-1/2 ms-2"
+              rules={[{ required: true, message: 'Please Input phone number' }]}>
+                <Input type='number' />
+              </Form.Item>
+            </div>
 
 
+            <Button type="primary" onClick={() => form.submit()}>
+              Submit
+            </Button>
           </div>
         </Form>
       </Modal>

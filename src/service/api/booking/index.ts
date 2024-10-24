@@ -48,6 +48,7 @@ const useBookingApi = (autoLoad: boolean = false) => {
       const data = await updateBooking(bookingUpdate, id)
       setBookingItems(data)
       setError(null)
+      return data.data
     } catch (err) {
       console.error(`Error updating booking: ${err}`)
       setError(`Failed to update booking: ${err}`)
