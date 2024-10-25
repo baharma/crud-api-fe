@@ -14,7 +14,6 @@ const Booking = () => {
   const [idBooking, setIdBooking] = useState<number | null>(null)
   const [form] = Form.useForm()
   const {
-    error,
     loading,
     onGetListBooking,
     onCreateBooking,
@@ -51,8 +50,7 @@ const Booking = () => {
           _method: 'PUT',
         }
         console.log(valuesUpdate)
-        await onUpdateBooking(valuesUpdate, idBooking).then(async () => {
-          console.log(idBooking)
+        await onUpdateBooking(valuesUpdate, idBooking).then(() => {
           handleOk()
           refreshData()
           form.resetFields()
@@ -113,16 +111,11 @@ const Booking = () => {
 
   }
   const deleteBooking = async (id: number) => {
-    await onDeleteBooking(id).then(async () => {
+    await onDeleteBooking(id).then(() => {
       refreshData()
     })
   }
 
-  const onSubmit = async (values: BookingCreate) => {
-    if (idBooking) {
-    } else {
-    }
-  }
 
   return (
     <Layout>
