@@ -41,13 +41,15 @@ const Calendar = () => {
     return rateplan.ratePlantItems
   }, [rateplan.ratePlantItems])
 
-  const modalShowAndReset = () =>{
-    forms.resetFields([{
-      room_id: null,
-      rateplan_id: null,
-      date: null,
-      availability: null,
-    }])
+  const modalShowAndReset = () => {
+    forms.resetFields([
+      {
+        room_id: null,
+        rateplan_id: null,
+        date: null,
+        availability: null,
+      },
+    ])
     showModal()
     setIdCalendar(null)
   }

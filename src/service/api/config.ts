@@ -4,7 +4,6 @@ const API_URL: string =
   process.env.NEXT_PUBLIC_BASE_API_URL || 'https://baharmportodesain.my.id'
 
 export const http = (
-  authMode?: boolean,
   respType?: 'json' | 'blob' | 'file',
   baseUrl?: string,
   customTimeout?: number,

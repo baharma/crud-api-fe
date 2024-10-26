@@ -25,14 +25,14 @@ interface BookingCreate {
 }
 
 interface BookingUpdate {
-  room_id:number
-  rateplan_id:number
-  calendar_id:number
-  reservation_date:string
-  check_in:string
-  check_out:string
-  name:string
-  email:string
-  phone_number:number
+  room_id: number
+  rateplan_id: number
+  calendar_id: number
+  reservation_date: string
+  check_in: string
+  check_out: string
+  name: string
+  email: string
+  phone_number: number
   _method: 'PUT'
 }

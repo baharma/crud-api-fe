@@ -37,7 +37,7 @@ const Booking = () => {
   const submitEvent = () => {
     form.validateFields().then(async (values) => {
       if (idBooking) {
-        const valuesUpdate : BookingUpdate = {
+        const valuesUpdate: BookingUpdate = {
           room_id: values.room_id.value,
           rateplan_id: values.rateplan_id,
           calendar_id: values.calendar_id,
@@ -59,7 +59,6 @@ const Booking = () => {
         await onCreateBooking(values).then(async () => {
           handleOk()
           refreshData()
-
         })
       }
     })
@@ -76,11 +75,10 @@ const Booking = () => {
       name: null,
       email: null,
       phone_number: null,
-    });
+    })
     setIdBooking(null)
     showModal()
     refreshData()
-
   }
 
   const dataRoomList = useMemo(() => {
@@ -102,12 +100,8 @@ const Booking = () => {
   const editBooking = async (id: number) => {
     modalResetForm()
     await onfindIdBooking(id).then((dataFind) => {
-    
       form.setFieldsValue({
-        room_id: {
-          value: dataFind.room_id,
-          label: 'Test',
-        },
+        room_id:dataFind.room_id,
         rateplan_id: dataFind.rateplan_id,
         calendar_id: dataFind.calendar_id,
         reservation_date: dataFind.reservation_date,
@@ -119,7 +113,6 @@ const Booking = () => {
       })
       setIdBooking(dataFind.id)
     })
-
   }
   const deleteBooking = async (id: number) => {
     await onDeleteBooking(id).then(() => {
@@ -127,10 +120,15 @@ const Booking = () => {
     })
   }
 
-
   return (
     <Layout>
-      <Button type="primary" className="mb-2" onClick={()=>{modalResetForm()}}>
+      <Button
+        type="primary"
+        className="mb-2"
+        onClick={() => {
+          modalResetForm()
+        }}
+      >
         Booking New
       </Button>
       <Table<Booking>
@@ -158,13 +156,13 @@ const Booking = () => {
                 showSearch
                 placeholder="Select a room"
                 optionFilterProp="label"
-                value={form.getFieldValue('room_id')}
+                
                 filterOption={(input, option) => {
-                  const label = option?.label
+                  const label = option?.title;
                   if (typeof label === 'string') {
-                    return label.toLowerCase().includes(input.toLowerCase())
+                    return label.toLowerCase().includes(input.toLowerCase());
                   }
-                  return false
+                  return false;
                 }}
                 className="w-full"
               >
@@ -190,7 +188,6 @@ const Booking = () => {
                 showSearch
                 placeholder="Select a Rate Plan"
                 optionFilterProp="label"
-                value={form.getFieldValue('rateplan_id')}
                 filterOption={(input, option) => {
                   const label = option?.label
                   if (typeof label === 'string') {
@@ -229,14 +226,16 @@ const Booking = () => {
                   return false
                 }}
                 className="w-full"
+                
               >
                 {dataCalendar.map((event: Calendar) => (
                   <Select.Option
                     key={event.id}
                     value={event.id}
                     label={event.name}
+                    
                   >
-                    {event.price}
+                    {event.room}
                   </Select.Option>
                 ))}
               </Select>
@@ -280,23 +279,25 @@ const Booking = () => {
               </Form.Item>
             </div>
             <div className="flex flex-row">
-            <Form.Item
-              name={'email'}
-              label="Email"
-              className="basis-1/2 me-2"
-              rules={[{ required: true, message: 'Please Input email' }]}
-            >
-              <Input type="email" />
-            </Form.Item>
-            <Form.Item
-              name={'phone_number'}
-              label="Phone Number"
-              className="basis-1/2 ms-2"
-              rules={[{ required: true, message: 'Please Input phone number' }]}>
-                <Input type='number' />
+              <Form.Item
+                name={'email'}
+                label="Email"
+                className="basis-1/2 me-2"
+                rules={[{ required: true, message: 'Please Input email' }]}
+              >
+                <Input type="email" />
+              </Form.Item>
+              <Form.Item
+                name={'phone_number'}
+                label="Phone Number"
+                className="basis-1/2 ms-2"
+                rules={[
+                  { required: true, message: 'Please Input phone number' },
+                ]}
+              >
+                <Input type="number" />
               </Form.Item>
             </div>
-
 
             <Button type="primary" onClick={() => form.submit()}>
               Submit

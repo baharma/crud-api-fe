@@ -20,7 +20,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
       const data = await getRoomList()
       setRoomItems(data.data)
       setError(null)
-      return data
+      return data.data
     } catch (err) {
       console.error(`Error fetching products: ${err}`)
       setError(`Failed to fetching media: ${err}`)

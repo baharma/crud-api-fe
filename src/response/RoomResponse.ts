@@ -3,24 +3,24 @@ interface Room {
   name: String
   description: String
   feature: String
-  published: String
-  availability: String
+  published: number
+  availability: number
   images: String
 }
 interface RoomCreate {
   name: String
   description: String
   feature: String
-  published: String
-  availability: String
+  published: number
+  availability: number
   images: String
 }
 interface RoomUpdate {
   name: String
   description: String
   feature: String
-  published: String
-  availability: String
+  published: number
+  availability: number
   images: String
   _method: 'PUT'
 }
