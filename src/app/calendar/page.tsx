@@ -41,21 +41,27 @@ const Calendar = () => {
     return rateplan.ratePlantItems
   }, [rateplan.ratePlantItems])
 
+  const modalShowAndReset = () =>{
+    forms.resetFields([{
+      room_id: null,
+      rateplan_id: null,
+      date: null,
+      availability: null,
+    }])
+    showModal()
+    setIdCalendar(null)
+  }
   const editNow = async (id: number) => {
+    modalShowAndReset()
     await onFindIdCalendar(id).then((dataFind) => {
       forms.setFieldsValue({
-        room_id: {
-          value: dataFind.data.room_id,
-          label: dataFind.data.room_name,
-        },
+        room_id: dataFind.room_id,
         rateplan_id: dataFind.data.rateplan_id,
         date: dataFind.data.date,
         availability: dataFind.data.availability,
       })
       setIdCalendar(dataFind.data.room_id)
     })
-
-    showModal()
   }
   const deleteNow = async (id: number) => {
     await onDeleteCelender(id).then(async () => {
@@ -90,7 +96,7 @@ const Calendar = () => {
   return (
     <Layout>
       <div className="flex">
-        <Button type="primary" onClick={showModal} className="mb-2">
+        <Button type="primary" onClick={modalShowAndReset} className="mb-2">
           Add New Calendar
         </Button>
       </div>

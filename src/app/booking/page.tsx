@@ -59,17 +59,28 @@ const Booking = () => {
         await onCreateBooking(values).then(async () => {
           handleOk()
           refreshData()
-          form.resetFields()
+
         })
       }
     })
   }
 
   const modalResetForm = () => {
-    form.resetFields
+    form.setFieldsValue({
+      room_id: null,
+      rateplan_id: null,
+      calendar_id: null,
+      reservation_date: null,
+      check_in: null,
+      check_out: null,
+      name: null,
+      email: null,
+      phone_number: null,
+    });
     setIdBooking(null)
     showModal()
     refreshData()
+
   }
 
   const dataRoomList = useMemo(() => {
@@ -119,7 +130,7 @@ const Booking = () => {
 
   return (
     <Layout>
-      <Button type="primary" className="mb-2" onClick={modalResetForm}>
+      <Button type="primary" className="mb-2" onClick={()=>{modalResetForm()}}>
         Booking New
       </Button>
       <Table<Booking>
