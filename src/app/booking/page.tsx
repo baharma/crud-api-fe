@@ -9,6 +9,7 @@ import useRoomApi from '@/service/api/room'
 import useCalendarApi from '@/service/api/calendar'
 import useRatePlantApi from '@/service/api/ratePlan'
 import clearTimeInDate from '@/service/hooks/useDateClearTime'
+import { findItemById } from '@/service/ui/useFind'
 const Booking = () => {
   const [booking, setBooking] = useState<Booking[]>([])
   const [idBooking, setIdBooking] = useState<number | null>(null)
@@ -33,14 +34,29 @@ const Booking = () => {
     refreshData()
   }, [])
   const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
+  
+  const dataRoomList = useMemo(() => {
+    return roomItems
+  }, [roomItems])
 
+  const dataCalendar = useMemo(() => {
+    return calendar
+  }, [calendar])
+
+  const dataRatePlantList = useMemo(() => {
+    return ratePlantItems
+  }, [ratePlantItems])
+
+  const bookingData = useMemo(() => {
+    return booking
+  }, [booking])
   const submitEvent = () => {
     form.validateFields().then(async (values) => {
       if (idBooking) {
         const valuesUpdate: BookingUpdate = {
           room_id: values.room_id.value,
-          rateplan_id: values.rateplan_id,
-          calendar_id: values.calendar_id,
+          rateplan_id: values.rateplan_id.value,
+          calendar_id: values.calendar_id.value,
           reservation_date: values.reservation_date,
           check_in: values.check_in,
           check_out: values.check_out,
@@ -81,38 +97,38 @@ const Booking = () => {
     refreshData()
   }
 
-  const dataRoomList = useMemo(() => {
-    return roomItems
-  }, [roomItems])
-
-  const dataCalendar = useMemo(() => {
-    return calendar
-  }, [calendar])
-
-  const dataRatePlantList = useMemo(() => {
-    return ratePlantItems
-  }, [ratePlantItems])
-
-  const bookingData = useMemo(() => {
-    return booking
-  }, [booking])
-
   const editBooking = async (id: number) => {
-    modalResetForm()
-    await onfindIdBooking(id).then((dataFind) => {
+    try {
+      modalResetForm();
+      const dataFind = await onfindIdBooking(id);
+      const matchedItemRoom = findItemById(dataRoomList, dataFind.room_id) || {};
+      const matchedItemRate = findItemById(dataRatePlantList, dataFind.rateplan_id) || {};
+      const matchedItemCalendar = findItemById(dataCalendar, dataFind.calendar_id) || {};
+  
       form.setFieldsValue({
-        room_id:dataFind.room_id,
-        rateplan_id: dataFind.rateplan_id,
-        calendar_id: dataFind.calendar_id,
+        room_id: {
+          value: matchedItemRoom.id,
+          label: matchedItemRoom.name,
+        },
+        rateplan_id: {
+          value: matchedItemRate.id,
+          label: matchedItemRate.name,
+        },
+        calendar_id: {
+          value: matchedItemCalendar.id,
+          label: matchedItemCalendar.room,
+        },
         reservation_date: dataFind.reservation_date,
         check_in: clearTimeInDate(dataFind.check_in),
         check_out: clearTimeInDate(dataFind.check_out),
         name: dataFind.name,
         email: dataFind.email,
         phone_number: dataFind.phone_number,
-      })
-      setIdBooking(dataFind.id)
-    })
+      });
+      setIdBooking(dataFind.id);
+    } catch (error) {
+      console.error('Failed to edit booking:', error);
+    }
   }
   const deleteBooking = async (id: number) => {
     await onDeleteBooking(id).then(() => {
@@ -122,6 +138,7 @@ const Booking = () => {
 
   return (
     <Layout>
+    
       <Button
         type="primary"
         className="mb-2"
