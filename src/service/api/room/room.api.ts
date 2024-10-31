@@ -11,7 +11,7 @@ const getRoomList = async () => {
   }
 }
 
-const createRoom = async (roomCreate: RoomCreate) => {
+const createRoom = async (roomCreate: FormData | RoomCreate) => {
   try {
     const res = await http().post('/api/v1/room', roomCreate)
     return res.data
@@ -23,8 +23,8 @@ const createRoom = async (roomCreate: RoomCreate) => {
 
 const updateRoom = async (
   id: number,
-  roomUpdate: RoomUpdate,
-): Promise<RoomCreate> => {
+  roomUpdate: FormData | RoomUpdate,
+)=> {
   try {
     const res = await http().post(`/api/v1/room/${id}`, roomUpdate)
     return res.data

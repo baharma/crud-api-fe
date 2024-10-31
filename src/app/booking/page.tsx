@@ -34,7 +34,7 @@ const Booking = () => {
     refreshData()
   }, [])
   const { open, confirmLoading, showModal, handleOk, handleCancel } = useModal()
-  
+
   const dataRoomList = useMemo(() => {
     return roomItems
   }, [roomItems])
@@ -54,9 +54,9 @@ const Booking = () => {
     form.validateFields().then(async (values) => {
       if (idBooking) {
         const valuesUpdate: BookingUpdate = {
-          room_id: values.room_id.value,
-          rateplan_id: values.rateplan_id.value,
-          calendar_id: values.calendar_id.value,
+          room_id: values.room_id.value ?? values.room_id,
+          rateplan_id: values.rateplan_id.value ?? values.rateplan_id,
+          calendar_id: values.calendar_id.value ?? values.calendar_id,
           reservation_date: values.reservation_date,
           check_in: values.check_in,
           check_out: values.check_out,
@@ -65,7 +65,6 @@ const Booking = () => {
           phone_number: values.phone_number,
           _method: 'PUT',
         }
-        console.log(valuesUpdate)
         await onUpdateBooking(valuesUpdate, idBooking).then(() => {
           handleOk()
           refreshData()
@@ -99,12 +98,14 @@ const Booking = () => {
 
   const editBooking = async (id: number) => {
     try {
-      modalResetForm();
-      const dataFind = await onfindIdBooking(id);
-      const matchedItemRoom = findItemById(dataRoomList, dataFind.room_id) || {};
-      const matchedItemRate = findItemById(dataRatePlantList, dataFind.rateplan_id) || {};
-      const matchedItemCalendar = findItemById(dataCalendar, dataFind.calendar_id) || {};
-  
+      modalResetForm()
+      const dataFind = await onfindIdBooking(id)
+      const matchedItemRoom = findItemById(dataRoomList, dataFind.room_id) || {}
+      const matchedItemRate =
+        findItemById(dataRatePlantList, dataFind.rateplan_id) || {}
+      const matchedItemCalendar =
+        findItemById(dataCalendar, dataFind.calendar_id) || {}
+
       form.setFieldsValue({
         room_id: {
           value: matchedItemRoom.id,
@@ -124,10 +125,10 @@ const Booking = () => {
         name: dataFind.name,
         email: dataFind.email,
         phone_number: dataFind.phone_number,
-      });
-      setIdBooking(dataFind.id);
+      })
+      setIdBooking(dataFind.id)
     } catch (error) {
-      console.error('Failed to edit booking:', error);
+      console.error('Failed to edit booking:', error)
     }
   }
   const deleteBooking = async (id: number) => {
@@ -138,7 +139,6 @@ const Booking = () => {
 
   return (
     <Layout>
-    
       <Button
         type="primary"
         className="mb-2"
@@ -173,13 +173,12 @@ const Booking = () => {
                 showSearch
                 placeholder="Select a room"
                 optionFilterProp="label"
-                
                 filterOption={(input, option) => {
-                  const label = option?.title;
+                  const label = option?.title
                   if (typeof label === 'string') {
-                    return label.toLowerCase().includes(input.toLowerCase());
+                    return label.toLowerCase().includes(input.toLowerCase())
                   }
-                  return false;
+                  return false
                 }}
                 className="w-full"
               >
@@ -243,14 +242,12 @@ const Booking = () => {
                   return false
                 }}
                 className="w-full"
-                
               >
                 {dataCalendar.map((event: Calendar) => (
                   <Select.Option
                     key={event.id}
                     value={event.id}
                     label={event.name}
-                    
                   >
                     {event.room}
                   </Select.Option>

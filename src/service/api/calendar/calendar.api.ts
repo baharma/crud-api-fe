@@ -22,7 +22,7 @@ const createCalendarList = async (createCalendar: CalendarCreate) => {
 
 const updateCalendar = async (id: number, updateCalendar: CalendarUpdate) => {
   try {
-    const res = await http().post(`/api/v1/calendar/${id}`, updateCalendar)
+    const res = await http().put(`/api/v1/calendar/${id}`, updateCalendar)
     return res.data
   } catch (err) {
     console.log(err)

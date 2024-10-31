@@ -1,3 +1,5 @@
+
+
 interface Room {
   id: number
   name: String
@@ -5,7 +7,7 @@ interface Room {
   feature: String
   published: number
   availability: number
-  images: String
+  images: string
 }
 interface RoomCreate {
   name: String
@@ -13,7 +15,7 @@ interface RoomCreate {
   feature: String
   published: number
   availability: number
-  images: String
+  images: File[]
 }
 interface RoomUpdate {
   name: String
@@ -21,6 +23,6 @@ interface RoomUpdate {
   feature: String
   published: number
   availability: number
-  images: String
+  images: File[]
   _method: 'PUT'
 }

@@ -80,7 +80,7 @@ const useCalendarApi = (autoLoad: boolean = false) => {
       const data = await findId(id)
       setCalendar(data)
       setError(null)
-      return data
+      return data.data
     } catch (err) {
       console.error(`Error deleting calendar: ${err}`)
       setError(`Failed to delete calendar: ${err}`)

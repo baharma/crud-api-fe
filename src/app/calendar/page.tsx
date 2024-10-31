@@ -7,6 +7,8 @@ import useRoomApi from '@/service/api/room'
 import useRatePlantApi from '@/service/api/ratePlan'
 import { useModal } from '@/service/ui/useModal'
 import { Columns } from './TableData'
+import { error } from 'console'
+import { findItemById } from '@/service/ui/useFind'
 
 const Calendar = () => {
   const [calendarData, setCalendarData] = useState<Calendar[]>([])
@@ -55,15 +57,30 @@ const Calendar = () => {
   }
   const editNow = async (id: number) => {
     modalShowAndReset()
-    await onFindIdCalendar(id).then((dataFind) => {
-      forms.setFieldsValue({
-        room_id: dataFind.room_id,
-        rateplan_id: dataFind.data.rateplan_id,
-        date: dataFind.data.date,
-        availability: dataFind.data.availability,
+    await onFindIdCalendar(id)
+      .then((dataFind) => {
+        const matchedItemRoom = findItemById(filteredOptions, dataFind.room_id)
+        const matcheItemRate = findItemById(
+          filterRateOption,
+          dataFind.rateplan_id,
+        )
+        forms.setFieldsValue({
+          room_id: {
+            value: matchedItemRoom.id,
+            label: matchedItemRoom.name,
+          },
+          rateplan_id: {
+            value: matcheItemRate.id,
+            label: matcheItemRate.name,
+          },
+          date: dataFind.date,
+          availability: dataFind.availability,
+        })
+        setIdCalendar(dataFind.room_id)
       })
-      setIdCalendar(dataFind.data.room_id)
-    })
+      .catch((error) => {
+        console.error('Failed to edit Calendar:', error)
+      })
   }
   const deleteNow = async (id: number) => {
     await onDeleteCelender(id).then(async () => {
@@ -71,12 +88,15 @@ const Calendar = () => {
     })
   }
 
-  const onSubmit = async (values: CalendarCreate) => {
+  const onSubmit = async (values: any) => {
     if (idCalendar) {
       const updateValues: CalendarUpdate = {
-        ...values,
-        _method: 'PUT',
+        room_id: values.room_id.value ?? values.room_id,
+        rateplan_id: values.room_id.value ?? values.room_id,
+        date: values.date,
+        availability: values.availability,
       }
+      console.log(updateValues)
       await onUpdateCalendar(updateValues, idCalendar).then(async () => {
         handleOk()
         const datas = await onGetCalendarList()

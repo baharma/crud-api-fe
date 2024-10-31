@@ -29,7 +29,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }
 
-  const onCreateRoom = async (roomCreate: RoomCreate) => {
+  const onCreateRoom = async (roomCreate: FormData | RoomCreate) => {
     on()
     try {
       const data = await createRoom(roomCreate)
@@ -43,7 +43,7 @@ const useRoomApi = (autoLoad: boolean = false) => {
     }
   }
 
-  const onUpdateRoom = async (room: RoomUpdate, id: number) => {
+  const onUpdateRoom = async (room: FormData | RoomUpdate, id: number) => {
     on()
     try {
       const data = await updateRoom(id, room)
